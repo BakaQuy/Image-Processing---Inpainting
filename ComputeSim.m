@@ -1,5 +1,6 @@
 function similitude = ComputeSim(Wi,candidate_patch)
 diff = Wi-candidate_patch;
+% diff(20,:) = 0; % used to discard bottom pixels (white pixels)
 NumberPixels = length(Wi(:,1));
 diffs = zeros(NumberPixels,1);
 for i=1:NumberPixels
