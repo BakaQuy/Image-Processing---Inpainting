@@ -1,0 +1,55 @@
+function output= patchmatch(image,it)
+
+[m,n]=size(image);
+norm_matrix=inf*ones(m,n);
+NNF=zeros(m,n);
+for iteration=1:it
+    for i=1:m
+        for j=1:n
+            x=randi([1,m],1);
+            y=randi([1,n],1);
+            temp1=norm([x y]-[i j]);
+            if temp1<=NNF(i,j)
+                NNF(i,j)=[x y];  
+                norm_matrix(i,j)=norm(NNF(i,j)-[i j]);
+            end
+        end
+    end
+
+
+    for p=1:m
+        for l=1:n
+            if p~=1 && l~=1
+                temp2=[norm_matrix(p-1,l) norm_matrix(p,l-1) norm_matrix(p,l)];
+                [minimum,I]=min(temp2);
+                if I==1
+                    NNF(p,l)=NNF(p-1,l);
+                elseif I==2
+                    NNF(p,l)=NNF(p,l-1);
+                end
+            elseif p==1
+                 temp2=[norm_matrix(p,l-1) norm_matrix(p,l)];
+                 [minimum,I]=min(temp);
+                 if I==1
+                    NNF(p,l)=NNF(p,l-1);
+                 end
+            elseif l==1
+                  temp2=[norm_matrix(p-1,l) norm_matrix(p,l)];
+                 [minimum,I]=min(temp);
+                 if I==1
+                    NNF(p,l)=NNF(p-1,l);
+                 end   
+            end
+        end
+        
+        
+    end
+    
+    
+end
+                 
+             
+                
+    
+
+    
