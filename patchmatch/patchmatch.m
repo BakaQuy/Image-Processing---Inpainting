@@ -17,7 +17,7 @@ for it=0:iteration
             end
         end
     end
-    NNF=propagation(norm_matrix,NNF,it,dim); 
+    NNF=propagation(norm_matrix,NNF,it,dim);
 end
 
 for k=1:m-1
