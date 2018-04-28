@@ -1,4 +1,4 @@
-function NNF = Find_NNF(image,iteration,dim)
+function NNF = find_NNF(image,iteration,dim)
 [m,n]=size(image);
 norm_matrix=inf*ones(m,n);
 NNF=inf*ones(m,n,2);

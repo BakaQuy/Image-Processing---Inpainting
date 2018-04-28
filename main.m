@@ -19,7 +19,7 @@ all_patches = all_patches(1:200:end); % discard some patches otherwise too many
 
 %% PatchMatch
 % iteration = 10;
-% NNF = Find_NNF(inImg,iteration,WindowSize);
+% NNF = find_NNF(inImg,iteration,WindowSize);
 
 %% Inpainting
 whiteImg = inImg;
