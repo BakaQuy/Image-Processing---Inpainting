@@ -1,10 +1,12 @@
-function NNF = find_NNF(image,iteration,dim,mask)
-[m,n,~]=size(image);
+function output= patchmatch(image,iteration,dim,mask,dim_wind)
+
+[m,n,p]=size(image);
+output=zeros(m,n,p);
 norm_matrix=inf*ones(m,n);
 NNF=inf*ones(m,n,2);
 x_basis=zeros(n,m);
 y_basis=zeros(m,n);
-dim_wind = dim;
+
 for i=1:m
     for j=1:n
         if mask(i,j)~=0
@@ -14,6 +16,7 @@ for i=1:m
     end
 end
 
+                 
 for it=0:iteration
     for i=1:m
         for j=1:n
@@ -34,4 +37,12 @@ for it=0:iteration
         end
     end
     NNF=propagation(norm_matrix,NNF,it,dim); 
+end
+
+for k=1:m
+    for h=1:n
+        x_b=(NNF(k,h,1));
+        y_b=(NNF(k,h,2));
+        output(k,h,:)=image(x_b,y_b,:);
+    end
 end
