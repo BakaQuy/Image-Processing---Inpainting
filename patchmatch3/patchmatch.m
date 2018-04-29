@@ -87,10 +87,3 @@ for k=1:m
         output(k,h,:)=image(x_b,y_b,:);
     end
 end
-        
-        
-             
-                
-    
-
-    

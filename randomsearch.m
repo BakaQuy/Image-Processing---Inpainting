@@ -1,7 +1,7 @@
 %randomsearch
 function output=randomsearch(NNF,x,y,dim,it)
-x_out=1;
-y_out=1;
+x_out=NNF(x,y,1);
+y_out=NNF(x,y,2);
 coor=[inf inf];
 for k=1:it
     if dim*0.5^k>=1
