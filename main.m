@@ -25,11 +25,12 @@ tic
 iteration = 10;
 NNF = find_NNF(inImg,iteration,WindowSize,mask);
 toc
+
 %% Inpainting
 whiteImg = inImg;
 tic
-for raw = 134:180
-    for column = 165:208
+for raw = 134:134
+    for column = 165:165
         p_position = [raw,column];
         Wi_set = find_Wi_Set(inImg,p_position,WindowSize);
 %         Vi_set = find_Vi_Set(Wi_set,all_patches,p_position,WindowSize);
@@ -44,11 +45,11 @@ end
 toc
 
 %% Display results
-figure
-subplot(1,2,1)
-imshow(whiteImg)
-subplot(1,2,2)
-imshow(inImg)
+% figure
+% subplot(1,2,1)
+% imshow(whiteImg)
+% subplot(1,2,2)
+% imshow(inImg)
 
 %% Compare patches Wi and Vi
 i = 10;
