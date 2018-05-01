@@ -3,26 +3,26 @@ function NNF = find_NNF(image,iteration,dim,mask)
 output=zeros(m,n,p);
 norm_matrix=inf*ones(m,n);
 NNF=inf*ones(m,n,2);
-x_basis=zeros(n,m);
-y_basis=zeros(m,n);
+fst=[];
+scd=[];
 dim_wind = dim;
 for i=1:m
     for j=1:n
         if mask(i,j)~=0
-            y_basis(i,j)=j;
-            x_basis(j,i)=i;
+            scd=[scd j];
+            fst=[fst i];
         end
     end
 end
 
+% disp(x_basis)
+% disp(y_basis)
                  
 for it=0:iteration
     for i=1:m
-        for j=1:n
-            fst=x_basis(j,:);
-            scd=y_basis(i,:);
-            fst=fst(fst~=0);
-            scd=scd(scd~=0);
+        for j=1:n              
+%             disp(fst)
+%             disp(scd)
             if length(fst)~=0 && length(scd)~=0
                 min_x=min(fst)-ceil(dim_wind/2);
                 max_x=max(fst)+ceil(dim_wind/2);
@@ -32,6 +32,10 @@ for it=0:iteration
                 b_next=[1:min_y,max_y:n];
                 x=randsample(a_next, 1);
                 y=randsample(b_next, 1);
+%                 disp('x=')
+%                 disp(x)
+%                 disp('y=')
+%                 disp(y)
     %             x=randi([1,m],1);
     %             y=randi([1,n],1);
                 temp1=norm([x y]-[i j]);
