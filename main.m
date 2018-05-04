@@ -30,9 +30,9 @@ toc
 whiteImg = inImg;
 tic
 for raw = 134:134
-    for column = 165:165
+    for column = 165:208
         p_position = [raw,column];
-        Wi_set = find_Wi_Set(inImg,p_position,WindowSize);
+        Wi_set = find_Wi_Set_up(inImg,p_position,WindowSize);
 %         Vi_set = find_Vi_Set(Wi_set,all_patches,p_position,WindowSize);
         Vi_set = PatchMatch(Wi_set,inImg,NNF,p_position,WindowSize);
         wi_coef = [Vi_set.wi];
@@ -45,16 +45,16 @@ end
 toc
 
 %% Display results
-% figure
-% subplot(1,2,1)
-% imshow(whiteImg)
-% subplot(1,2,2)
-% imshow(inImg)
-
-%% Compare patches Wi and Vi
-i = 10;
 figure
 subplot(1,2,1)
-imshow(reshape(Wi_set(i).patch,WindowSize,WindowSize,3))
+imshow(whiteImg)
 subplot(1,2,2)
-imshow(reshape(Vi_set(i).patch,WindowSize,WindowSize,3))
+imshow(inImg)
+
+%% Compare patches Wi and Vi
+% i = 15;
+% figure
+% subplot(1,2,1)
+% imshow(reshape(Wi_set(i).patch,WindowSize,WindowSize,3))
+% subplot(1,2,2)
+% imshow(reshape(Vi_set(i).patch,WindowSize,WindowSize,3))
