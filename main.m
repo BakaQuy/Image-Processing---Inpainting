@@ -7,8 +7,8 @@ inImg = originImg;
 [m,n,o] = size(inImg);
 
 %% set black spot of test1.jpg
-inImg(134:180,165:208,:) = 1; % place a white spot at the target location
-H = [134 180;165 208];
+% inImg(134:180,165:208,:) = 1; % place a white spot at the target location
+H = [100 155;81 140];
 mask = zeros(m,n);
 mask(H(1,1):H(1,2),H(2,1):H(2,2)) = 1;
 
@@ -22,15 +22,16 @@ mask(H(1,1):H(1,2),H(2,1):H(2,2)) = 1;
 
 %% PatchMatch
 tic
-iteration = 10;
-NNF = find_NNF(inImg,iteration,WindowSize,mask);
+iteration = 5;
+NNF = find_NNF(inImg,iteration,mask,WindowSize);
 toc
+% inImg(134:180,165:208,:) = 1; % place a white spot at the target location
 
 %% Inpainting
 whiteImg = inImg;
 tic
-for raw = 134:134
-    for column = 165:208
+for raw = H(1,1):H(1,2)
+    for column = H(2,1):H(2,2)
         p_position = [raw,column];
         Wi_set = find_Wi_Set_up(inImg,p_position,WindowSize);
 %         Vi_set = find_Vi_Set(Wi_set,all_patches,p_position,WindowSize);
@@ -52,9 +53,9 @@ subplot(1,2,2)
 imshow(inImg)
 
 %% Compare patches Wi and Vi
-% i = 15;
-% figure
-% subplot(1,2,1)
-% imshow(reshape(Wi_set(i).patch,WindowSize,WindowSize,3))
-% subplot(1,2,2)
-% imshow(reshape(Vi_set(i).patch,WindowSize,WindowSize,3))
+i = 10;
+figure
+subplot(1,2,1)
+imshow(reshape(Wi_set(i).patch,WindowSize,WindowSize,3))
+subplot(1,2,2)
+imshow(reshape(Vi_set(i).patch,WindowSize,WindowSize,3))
