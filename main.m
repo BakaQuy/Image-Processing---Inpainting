@@ -44,6 +44,8 @@ for iter = 1:100
         Wi_set = find_Wi_Set(inputImg,p_position,WindowSize);
 %         Vi_set = find_Vi_Set(Wi_set,all_patches,p_position,WindowSize);
         Vi_set = PatchMatch(Wi_set,inputImg,NNF,p_position,WindowSize);
+        % compute the color C of the pixel by performing a weighted 
+        % average of the colors Ci proposed by each patch Vi
         wi_coef = [Vi_set.wi];
         Ci_coef = reshape([Vi_set.color],3,length(wi_coef));
         product = (wi_coef.*Ci_coef)';

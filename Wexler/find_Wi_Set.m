@@ -1,4 +1,13 @@
-function Wi_set = find_Wi_Set(inImg,p_position,WindowSize) 
+function Wi_set = find_Wi_Set(inImg,p_position,WindowSize)
+% find all window Wi of size WindowSize containing the pixel p_position
+% Wi_set is a set of structure, each structure represent one window Wi
+% A window Wi has the following attributes:
+% - Wi.patch : contains the RGB components of each pixel of the patch Wi 
+%   (reshaped to a (WindowSize^2, 3) matrix)
+% - Wi.position_rel : is the index of the pixel in the reshaped window Wi
+% - Wi.center : gives the absolute coordinates of the center of the window Wi
+%   in inImg
+
 size_set = WindowSize^2;
 Wi_set = repmat(struct('patch',zeros(size_set,3),'position_rel',zeros(1),'center',zeros(2,1)),1,size_set);
 WindowHalf = floor(WindowSize/2);
