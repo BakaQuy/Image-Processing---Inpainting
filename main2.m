@@ -53,7 +53,7 @@ toc
 % imshow(inImg)
 
 %% Compare patches Wi and Vi
-i = 15;
+i = 10;
 figure
 subplot(1,2,1)
 imshow(reshape(Wi_set(i).patch,WindowSize,WindowSize,3))

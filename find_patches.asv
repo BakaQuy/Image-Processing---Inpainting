@@ -1,6 +1,5 @@
 function V_all = find_patches(inImg,H,WindowSize)
-% set up the database of the patches of size WindowSize V_all, 
-% these are the patches that belong to the image excluding the hole H 
+% set up the database of the 
 [m,n,~] = size(inImg);
 size_set = WindowSize^2;
 i = 1;
