@@ -6,7 +6,7 @@ y2 = NNF(x1,y1,2);
 [m,n,~]=size(NNF);
 % disp(size(NNF))
 Window = (sqrt(length(Wi.patch)));
-[ min_x, min_y, max_x, max_y ]=limit_patch( x2, y2, n, m, Window );
+[ min_x, min_y, max_x, max_y ]=limit_patch( x2, y2, m, n, Window );
 % disp(min_x)
 % disp(max_x)
 Vi.patch = reshape(inImg(min_x:max_x,min_y:max_y,:),length(Wi.patch),3);
