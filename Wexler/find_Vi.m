@@ -1,4 +1,4 @@
-function Vi = find_Vi(Wi,all_patches,p_position)
+function Vi = find_Vi(Wi,all_patches,dist)
 % find the most similar window Vi from all_patches database with respect to Wi 
 % and attribute to the selected Vi the following attributes:
 % - Vi.patch : contains the RGB components of each pixel of the patch Vi 
@@ -15,5 +15,5 @@ end
 [maxSim, index] = max(sim_all);
 Vi_found = all_patches(index);
 Vi.patch = Vi_found.patch;
-Vi.wi = 1.3^(-norm(p_position-Vi_found.position))*maxSim;
+Vi.wi = 1.3^(-dist)*maxSim;
 Vi.color = Vi_found.patch(Wi.position_rel,:);
