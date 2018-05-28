@@ -3,66 +3,58 @@ addpath(genpath('Images'));
 addpath(genpath('Patchmatch'));
 addpath(genpath('Spiral'));
 addpath(genpath('Wexler'));
-tic
+
 %% Parameters
-InputImageName = 'input.png';
-Database = 'D.png';
-Window = 3;
+InputImageName = 'input.jpg';
+Database = 'input.jpg';
+WindowSize = 11;
 
 inputImg = im2double(imread(InputImageName));
-originalImg = inputImg;
-% [m,n,o] = size(inputImg);
+[m,n,o] = size(inputImg);
 
 %% Set black spot (test.png)
-H = [127 165;164 184];
-% H = [127 128;164 165];
-% mask = zeros(m,n);
-% mask(H(1,1):H(1,2),H(2,1):H(2,2)) = 1;
+H = [134 178;168 209];
+mask = zeros(m,n);
+mask(H(1,1):H(1,2),H(2,1):H(2,2)) = 1;
 % distT = ones(m,n);
 % distT(H(1,1):H(1,2),H(2,1):H(2,2)) = 0;
 % distT = bwdist(distT);
+originalImg = inputImg;
 % inputImg(H(1,1):H(1,2),H(2,1):H(2,2),:) = 1; % place a white spot at the target location
 % originalImgwhite = inputImg;
 
 %% Pyramid levels
 inputImg2 = im2double(imread(Database));
-Pyramid(1).D = imresize(inputImg2,0.25);
-Pyramid(2).D = imresize(inputImg2,0.5);
-Pyramid(3).D = inputImg2;
+Pyramid(1).D = inputImg2;
 
 inputImg(H(1,1):H(1,2),H(2,1):H(2,2),:) = 1; % place a white spot at the target location
 originalImgwhite = inputImg;
 
-pyramid1 = imresize(inputImg,0.5);
-pyramid2 = imresize(pyramid1,0.5);
-pyramid3 = imresize(pyramid2,0.5);
-
-H1 = ceil(H/2);
-H2 = ceil(H1/2);
-H3 = ceil(H2/2);
-
-Pyramid(1).H = H2;
-Pyramid(1).img = pyramid2;
-Pyramid(2).H = H1;
-Pyramid(2).img = pyramid1;
-Pyramid(3).H = H;
-Pyramid(3).img = inputImg;
+% pyramid1 = imresize(inputImg,0.5);
+% pyramid2 = imresize(pyramid1,0.5);
+% pyramid3 = imresize(pyramid2,0.5);
+% 
+% H1 = ceil(H/2);
+% H2 = ceil(H1/2);
+% H3 = ceil(H2/2);
+% 
+Pyramid(1).H = H;
+Pyramid(1).img = inputImg;
 
 %% All Patches
 % all_patches = find_patches(inputImg,H,WindowSize);
 % all_patches = all_patches(1:1:end); % discard some patches otherwise too many
-% inputImg2 = im2double(imread('input.png'));
+% inputImg2 = im2double(imread('D.png'));
 % all_patches = find_patches(inputImg2,H,WindowSize);
 
 %% PatchMatch
-% tic
-% iteration = 7;
-% NNF = find_NNF(inputImg,iteration,mask,WindowSize);
-% toc
+tic
+iteration = 7;
+NNF = find_NNF(inputImg,iteration,mask,WindowSize);
+toc
 
 %% Image completion
-for level = 1:length(Pyramid(:))
-    WindowSize = Window*level;
+for level = 1:length(Pyramid)
     H = Pyramid(level).H;
     inputImg = Pyramid(level).img;
     D = Pyramid(level).D;
@@ -72,7 +64,7 @@ for level = 1:length(Pyramid(:))
     distT(H(1,1):H(1,2),H(2,1):H(2,2)) = 0;
     distT = bwdist(distT);
     [idX, idY] = spiral_browser(inputImg(H(1,1):H(1,2),H(2,1):H(2,2)));
-    for iter = 1:3
+    for iter = 1:1
         for p = 1:length(idX)
             p_position = [idX(p)+H(1,1)-1,idY(p)+H(2,1)-1];
     %     for raw = H(1,1):H(1,2)
