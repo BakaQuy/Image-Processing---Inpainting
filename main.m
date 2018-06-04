@@ -22,7 +22,7 @@ Morg(H(1,1):H(1,2),H(2,1):H(2,2)) = 1;
 %%
 
 % tic
-A = inpaint4(Aorg,Morg);
+A = inpaint5(Aorg,Morg);
 % toc
 
 imshow(A)

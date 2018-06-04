@@ -1,19 +1,30 @@
-function A = inpaint4(Aorg,Morg) 
+function A = patch_inpaint3(Aorg,Morg, verbose, sigma) 
+%% Parameters
+if nargin < 3
+    verbose = true;
+end
+if nargin < 4
+    sigma = 0.25;
+end
+
+if ~exist('CSH_nn.m','file')
+    error('CSH_nn not found. Please download and add to path:  http://www.eng.tau.ac.il/~simonk/CSH/index.html');
+end
+
 % Also accept RGB masks, but only use first channel
-verbose = true;
 if size(Morg,3) > 1
     Morg = Morg(:,:,1);
 end
 
 width = 8;
-csh_iterations = 5;
+csh_iterations = 10;
 k = 1;
 calcBnn = 0;
 
 % Maximum number of iterations on this scale;
 % oscillations are possible
-iterations = 15;
-diffthresh = 5;
+iterations = 20;
+diffthresh = 1;
 
 %% Pyramid levels
 % Determinte starting scale
@@ -39,13 +50,14 @@ distT = bwdist(~M);
 B = A;
 B(M3)=0;
 A(M3)=255;
+figure
+imshow(A);
+
 CSH_ann = CSH_nn(A,B,width,csh_iterations,k,calcBnn,M);
 A = double(A)./255;
+R = zeros(size(A));
+Rcount = zeros(m,n);
 for o = 1:max(distT(:))
-    k = 1;
-    R = zeros(size(A));
-    Rcount = zeros(m,n);
-    D = zeros(1);
     for i = 1:m-width+1
         for j = 1:n-width+1
             pi = i:i+width-1;
@@ -58,33 +70,34 @@ for o = 1:max(distT(:))
                 pi2 = i2:i2+width-1;
                 pj2 = j2:j2+width-1;
                 patch2 = A(pi2,pj2,:);
+                patch2index = M(pi2,pj2);
                 
-                M2 = ~(distTemp==o);
+                M2 = ~M(pi,pj);
                 patch = patch.*M2;
                 patch2temp = patch2.*M2;
+                
+                if any(patch2index(:)==1)
+                   disp('pas bon1') 
+                end
     
                 d = sum( (patch(:)-patch2temp(:)).^2 );
-                D(k) = d;
-                R(pi,pj,:,k) = patch2;
-                Rcount(pi,pj,1,k) = d;
-                k = k+1;
+                sim = exp( -d / (2*sigma^2) );
+
+                R(pi,pj,:) = R(pi,pj,:) + sim*patch2;
+                Rcount(pi,pj) = Rcount(pi,pj) + sim;
             end
         end
     end
-    sigma = prctile(D,75);
-    Rcount(Rcount>0) = exp( -Rcount(Rcount>0) / (2*sigma^2) );
-    Rcount = repmat(Rcount,[1 1 3 1]);
-    R(Rcount>0) = Rcount(Rcount>0).*R(Rcount>0);
-    R = sum(R,4);
-    Rcount = sum(Rcount,4);
-    R(Rcount>0) = R(Rcount>0) ./ Rcount(Rcount>0);
-    R(~M3)=A(~M3);
-    A = R;
 end
-A = uint8(255*A);
+Rcount = repmat(Rcount,[1 1 3]);
+R(Rcount>0) = R(Rcount>0) ./ Rcount(Rcount>0);
+R(~M3)=A(~M3);
+A = uint8(255*R);
+figure
+imshow(A);
 
-%% Go through all scales
-for logscale = startscale:0
+% Go through all scales
+for logscale = startscale:-1
 
     scale = 2^(logscale);
     
@@ -113,8 +126,6 @@ for logscale = startscale:0
         %Create new image by letting each patch vote
         R = zeros(size(A));
         Rcount = zeros(m,n);
-        D = zeros(1);
-        k = 1;
         for i = 1:m-width+1
             for j = 1:n-width+1
                 pi = i:i+width-1;
@@ -127,27 +138,29 @@ for logscale = startscale:0
                     pi2 = i2:i2+width-1;
                     pj2 = j2:j2+width-1;
                     patch2 = A(pi2,pj2,:);
+                    patch2index = M(pi2,pj2);
+                    if any(patch2index(:)==1)
+                       disp('pas bon') 
+                    end
 
                     d = sum( (patch(:)-patch2(:)).^2 );
-                    D(k) = d;
-                    R(pi,pj,:,k) = patch2;
-                    Rcount(pi,pj,1,k) = d;
-                    k = k+1;
+                    sim = exp( -d / (2*sigma^2) );
+
+                    R(pi,pj,:) = R(pi,pj,:) + sim*patch2;
+                    Rcount(pi,pj) = Rcount(pi,pj) + sim;
                 end
             end
         end
-        sigma = prctile(D,75);
-        Rcount(Rcount>0) = exp( -Rcount(Rcount>0) / (2*sigma^2) );
-        Rcount = repmat(Rcount,[1 1 3 1]);
-        R(Rcount>0) = Rcount(Rcount>0).*R(Rcount>0);
-        R = sum(R,4);
-        Rcount = sum(Rcount,4);
+
+        %Normalize and 
+        Rcount = repmat(Rcount,[1 1 3]);
         R(Rcount>0) = R(Rcount>0) ./ Rcount(Rcount>0);
+        %Keep pixels outside mask
         R(~M3)=A(~M3);
-        
         %Convert back to uint8
         Aprev = 255*A;
         A = uint8(255*R);
+        
         if iter>1
             %Measure how much image has changed
             diff = sum( (double(A(:))-double(Aprev(:))).^2 ) / sum(M(:)>0);
@@ -178,76 +191,80 @@ for logscale = startscale:0
     end
 end
 
-% %% Final reconstruction
-% logscale = 0;
-% scale = 2^(logscale);
-% 
-% if verbose
-%     fprintf('Scale = 2^%d\n',logscale);
-% end
-% distT = bwdist(~M);
-% for iter = 1:iterations
-%     if verbose
-%         fprintf('  Iteration %2d/%2d',iter,iterations);
-%         imshow(A);
-%         pause(0.001)
-%     end
-% 
-%     B = A;
-%     B(M3)=0;
-% 
-%     %Compute NN field
-%     CSH_ann = CSH_nn(A,B,width,csh_iterations,k,calcBnn,M);
-% 
-%     %Now be work in double precision
-%     A = double(A)./255;
-% 
-%     %Create new image by letting each patch vote
-%     R = zeros(size(A));
-%     Rcount = ones(m,n);
-%     for i = 1:m-width+1
-%         for j = 1:n-width+1
-%             pi = i:i+width-1;
-%             pj = j:j+width-1;
-%             MTemp = M(pi,pj);
-%             if any(MTemp(:) == 1)
-%                 patch = A(pi,pj,:);
-%                 i2 = CSH_ann(i,j,2);
-%                 j2 = CSH_ann(i,j,1);
-%                 pi2 = i2:i2+width-1;
-%                 pj2 = j2:j2+width-1;
-%                 patch2 = A(pi2,pj2,:);
-% 
-%                 distTemp = distT(pi,pj);
-%                 distTemp = repmat(distTemp,[1 1 3]);
-%                 d = sum( distTemp(:).*((patch(:)-patch2(:)).^2) );
-%                 RcountToUpdate = Rcount(pi,pj)>d;
-%                 Rcount(pi,pj) = Rcount(pi,pj).*~RcountToUpdate;
-%                 Rcount(pi,pj) = Rcount(pi,pj)+d*RcountToUpdate;
-%                 R(pi,pj,:) = R(pi,pj,:).*~RcountToUpdate;
-%                 R(pi,pj,:) = R(pi,pj,:) + RcountToUpdate.*patch2;
-%                 R(pi,pj,:) = patch2;
+logscale = 0;
+    scale = 2^(logscale);
+    
+    if verbose
+        fprintf('Scale = 2^%d\n',logscale);
+    end
+    
+    for iter = 1:10
+        if verbose
+            fprintf('  Iteration %2d/%2d',iter,iterations);
+            imshow(A);
+            pause(0.001)
+        end
+        
+        B = A;
+        B(M3)=0;
+        
+        %Compute NN field
+        CSH_ann = CSH_nn(A,B,width,csh_iterations,k,calcBnn,M);
+
+        %Now be work in double precision
+        A = double(A)./255;
+        
+        %Create new image by letting each patch vote
+        R = zeros(size(A));
+        k = 1;
+        for i = 1:m-width+1
+            for j = 1:n-width+1
+                pi = i:i+width-1;
+                pj = j:j+width-1;
+                MTemp = M(pi,pj);
+                if any(MTemp(:) == 1)
+                    patch = A(pi,pj,:);
+                    i2 = CSH_ann(i,j,2);
+                    j2 = CSH_ann(i,j,1);
+                    pi2 = i2:i2+width-1;
+                    pj2 = j2:j2+width-1;
+                    patch2 = A(pi2,pj2,:);
+                    patch2index = M(pi2,pj2);
+                    if any(patch2index(:)==1)
+                       disp('pas bon') 
+                    end
+                    
+                    R(pi,pj,:) = patch2;
+                end
+            end
+        end
+        
+%         for i = 1:m
+%             for j = 1:n
+%                 if M(i,j) == 1
+%                     [~,maxK] = max(Rcount(i,j,:));
+%                     R(i,j,:) = R2(i,j,:,maxK);
+%                 end
 %             end
 %         end
-%     end
-% 
-%     %Keep pixels outside mask
-%     R(~M3)=A(~M3);
-%     %Convert back to uint8
-%     Aprev = 255*A;
-%     A = uint8(255*R);
-% 
-%     if iter>1
-%         %Measure how much image has changed
-%         diff = sum( (double(A(:))-double(Aprev(:))).^2 ) / sum(M(:)>0);
-%         if verbose
-%             fprintf(' diff = %f\n',diff);
-%         end
-%         %Stop iterating if change is low
-%         if diff < diffthresh 
-%             break;
-%         end
-%     elseif verbose
-%         fprintf('\n');
-%     end
-% end
+                
+        %Keep pixels outside mask
+        R(~M3)=A(~M3);
+        %Convert back to uint8
+        Aprev = 255*A;
+        A = uint8(255*R);
+        
+        if iter>1
+            %Measure how much image has changed
+            diff = sum( (double(A(:))-double(Aprev(:))).^2 ) / sum(M(:)>0);
+            if verbose
+                fprintf(' diff = %f\n',diff);
+            end
+            %Stop iterating if change is low
+            if diff < diffthresh 
+                break;
+            end
+        elseif verbose
+            fprintf('\n');
+        end
+    end
