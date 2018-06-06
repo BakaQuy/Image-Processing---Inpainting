@@ -1,6 +1,5 @@
-function  imageOut = PyramidReconstruct(imageIn,mask,windowSize,iterations,thresholdScale)
+function  imageOut = PyramidReconstruct(imageIn,mask,windowSize,thresholdScale,iterations,csh_iterations)
 %% CSH parameter
-csh_iterations = 10;
 calcBnn = 0;
 
 %% Pyramid level scaling

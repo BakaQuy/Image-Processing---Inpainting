@@ -1,8 +1,6 @@
-function  imageOut = FinalReconstruction(imageIn,mask,windowSize,iterations)
+function  imageOut = FinalReconstruction(imageIn,mask,windowSize,iterations,csh_iterations)
 %% CSH parameter
-csh_iterations = 10;
 calcBnn = 0;
-
 
 % Scale image to firstScale
 I = imageIn; % Scale imageIn and store it in I

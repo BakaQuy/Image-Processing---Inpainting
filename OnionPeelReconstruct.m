@@ -1,6 +1,5 @@
-function  imageOut = OnionPeelReconstruct(imageIn,mask,windowSize)
+function  imageOut = OnionPeelReconstruct(imageIn,mask,windowSize,csh_iterations)
 %% CSH parameter
-csh_iterations = 10;
 calcBnn = 0;
 
 %% Pyramid level scaling

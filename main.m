@@ -2,7 +2,7 @@ clc;clear;
 addpath(genpath('CSH'));
 addpath(genpath('Images'));
 
-image = 'test.jpg';
+image = 'original2.png';
 
 imageIn = imread(image);
 binaryMask = get_binary_mask(imageIn);
