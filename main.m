@@ -1,28 +1,16 @@
-clear;close all;clc;
+clc;clear;
 addpath(genpath('CSH'));
 addpath(genpath('Images'));
 
-image = 'original2';
+image = 'test.jpg';
 
-Aorg = imread([image '.png']);
-% Morg = imread([image '-mask.png']);
+imageIn = imread(image);
+binaryMask = get_binary_mask(imageIn);
 
-%%
-[m,n,o] = size(Aorg);
-H = [97 130;279 297];
-Morg = zeros(m,n);
-Morg(H(1,1):H(1,2),H(2,1):H(2,2)) = 1;
+tic
+A = inpaint(imageIn,binaryMask);
+toc
 
-%%
-% [m,n,o] = size(Aorg);
-% H = [568 625;85 98];
-% Morg = zeros(m,n);
-% Morg(H(1,1):H(1,2),H(2,1):H(2,2)) = 1;
-
-%%
-
-% tic
-A = inpaint5(Aorg,Morg);
-% toc
-
+figure
 imshow(A)
+title('Finito!')
