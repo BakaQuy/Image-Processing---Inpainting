@@ -11,10 +11,7 @@ M(M>0)=1;
 M3 = repmat(M,[1 1 3])==1;
 distT = bwdist(~M);
 
-fprintf('Final Scale\n');
-
 for iter = 1:iterations
-    fprintf('  Iteration %2d/%2d',iter,iterations);
     imshow(I);
     title(sprintf('En recontruction...\nFinal Scale\nIteration %2d/%2d',iter,iterations));
     pause(0.001)
@@ -40,6 +37,11 @@ for iter = 1:iterations
                 patch = I(pi,pj,:);
                 i2 = CSH_ann(i,j,2);
                 j2 = CSH_ann(i,j,1);
+                
+%                 i2j2 = BruteForceSearch([i,j],I,M,windowSize);
+%                 i2 = i2j2(1);
+%                 j2 = i2j2(2);
+                
                 pi2 = i2:i2+windowSize-1;
                 pj2 = j2:j2+windowSize-1;
                 patch2 = I(pi2,pj2,:);

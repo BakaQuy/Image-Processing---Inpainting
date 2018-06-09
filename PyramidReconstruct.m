@@ -15,13 +15,10 @@ M(M>0)=1;
 
 [m,n,~] = size(I);
 M3 = repmat(M,[1 1 3])==1;
+distT = bwdist(~M);
 for logscale = firstScale:-1
     scale = 2^(logscale);
-    
-    fprintf('Scale = 2^%d\n',logscale);
-
     for iter = 1:iterations
-        fprintf('  Iteration %2d/%2d',iter,iterations);
         imshow(I);
         title(sprintf('En recontruction...\nScale = %d\nIteration %2d/%2d',-logscale,iter,iterations));
         pause(0.001)
@@ -67,8 +64,8 @@ for logscale = firstScale:-1
            pj = Rdata(raw,2):Rdata(raw,2)+windowSize-1;
            pi2 = Rdata(raw,3):Rdata(raw,3)+windowSize-1;
            pj2 = Rdata(raw,4):Rdata(raw,4)+windowSize-1;
-           R(pi,pj,:) = R(pi,pj,:) + Rdata(raw,5).*I(pi2,pj2,:);
-           Rcount(pi,pj) = Rcount(pi,pj) + Rdata(raw,5);
+           R(pi,pj,:) = R(pi,pj,:) + Rdata(raw,5)*(distT(pi,pj).*I(pi2,pj2,:));
+           Rcount(pi,pj) = Rcount(pi,pj) + distT(pi,pj).*Rdata(raw,5);
         end
         % Normalize and divide (NUM/DEM)
         Rcount = repmat(Rcount,[1 1 3]);
@@ -80,15 +77,11 @@ for logscale = firstScale:-1
         Iprev = 255*I;
         I = uint8(255*R);
         if iter>1
-            %Measure how much image has changed
+            % Check convergence
             diff = sum( (double(I(:))-double(Iprev(:))).^2 ) / sum(M(:)>0);
-                fprintf(' diff = %f\n',diff);
-            %Stop iterating if change is low
             if diff < thresholdScale
                 break;
             end
-        else
-            fprintf('\n');
         end
     end
     
@@ -101,7 +94,8 @@ for logscale = firstScale:-1
         M = imresize(mask,[m n]);
         M(M>0)=1;
         M3 = repmat(M,[1 1 3])==1;
-
+        distT = bwdist(~M);
+        
         %Outside mask, I is equal to original image
         I(~M3) = Idata(~M3);
     end

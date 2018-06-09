@@ -1,17 +1,15 @@
 function  imageOut = inpaint(imageIn,mask)
-%% Plot
-subplot(1, 3, 1);
-imshow(imageIn);
-subplot(1, 3, 2);
-imshow(mask);
-subplot(1, 3, 3);
-
 %% Parameters
 windowSize = 8; % Size of the window Wi,Vi
 iterations = 10; % Number of iterations per scale
 csh_iterations = 10;
-final_iterations = 2; % Number of iterations in the final recontruction (1 or 2 iterations is well enough)
-thresholdScale = 1; % Threshold to go to next scale level
+final_iterations = 1; % Number of iterations in the final recontruction (1 or 2 iterations is well enough)
+thresholdScale = 0.5; % Threshold to go to next scale level
+
+%% Plot
+subplot(1, 3, 1);imshow(imageIn);title('Original Image');
+subplot(1, 3, 2);imshow(mask);title('Mask');
+subplot(1, 3, 3); % Reconstruction plot
 
 %% Onion peel recontruction
 I = OnionPeelReconstruct(imageIn,mask,windowSize,csh_iterations);

@@ -15,7 +15,7 @@ fontSize = 16;
 % Read in standard MATLAB gray scale demo image.
 grayImage = Image;
 imshow(grayImage, []);
-title('Original Grayscale Image', 'FontSize', fontSize);
+title('Original Image', 'FontSize', fontSize);
 set(gcf, 'Position', get(0,'Screensize')); % Maximize figure.
 message = sprintf('Left click and hold to begin drawing.\nSimply lift the mouse button to finish');
 uiwait(msgbox(message));

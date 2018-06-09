@@ -39,6 +39,10 @@ for o = 1:ceil(max(distT(:))) % Reconstruct the oclusion area starting from the 
                 patch = I(pi,pj,:);
                 i2 = CSH_ann(i,j,2);
                 j2 = CSH_ann(i,j,1);
+%                 i2j2 = BruteForceSearch([i,j],I,M,windowSize);
+%                 i2 = i2j2(1);
+%                 j2 = i2j2(2);
+                
                 pi2 = i2:i2+windowSize-1;
                 pj2 = j2:j2+windowSize-1;
                 patch2 = I(pi2,pj2,:);
@@ -61,8 +65,8 @@ for o = 1:ceil(max(distT(:))) % Reconstruct the oclusion area starting from the 
        pj = Rdata(raw,2):Rdata(raw,2)+windowSize-1;
        pi2 = Rdata(raw,3):Rdata(raw,3)+windowSize-1;
        pj2 = Rdata(raw,4):Rdata(raw,4)+windowSize-1;
-       R(pi,pj,:) = R(pi,pj,:) + Rdata(raw,5).*I(pi2,pj2,:);
-       Rcount(pi,pj) = Rcount(pi,pj) + Rdata(raw,5);
+       R(pi,pj,:) = R(pi,pj,:) + Rdata(raw,5)*(distT(pi,pj).*I(pi2,pj2,:));
+       Rcount(pi,pj) = Rcount(pi,pj) + distT(pi,pj).*Rdata(raw,5);
     end
     % Normalize and divide (NUM/DEM)
     Rcount = repmat(Rcount,[1 1 3]);
