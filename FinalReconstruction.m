@@ -1,10 +1,6 @@
 function  imageOut = FinalReconstruction(imageIn,mask,windowSize,iterations,csh_iterations)
-%% CSH parameter
-calcBnn = 0;
-
-% Scale image to firstScale
-I = imageIn; % Scale imageIn and store it in I
-M = mask;  % Scale mask
+I = imageIn;
+M = mask;
 M(M>0)=1;
 
 [m,n,~] = size(I);
@@ -13,21 +9,19 @@ distT = bwdist(~M);
 
 for iter = 1:iterations
     imshow(I);
-    title(sprintf('En recontruction...\nFinal Scale\nIteration %2d/%2d',iter,iterations));
+    title(sprintf('Completion...\nFinal Scale\nIteration %2d/%2d',iter,iterations));
     pause(0.001)
 
     D = I;
-    D(M3)=0;
+    D(M3)=0;    % Build data base D for Patchmatch
     R = zeros(size(I));
     Rcount = 10*ones(m,n);
 
-    %Compute NN field
-    CSH_ann = CSH_nn(I,D,windowSize,csh_iterations,1,calcBnn,M);
+    % Compute NN field
+    CSH_ann = CSH_nn(I,D,windowSize,csh_iterations,1,0,M);
 
-    %Now be work in double precision
+    % Convert the image I to double precision for computation
     I = double(I)./255;
-
-    %Create new image by letting each patch vote
     for i = 1:m-windowSize+1
         for j = 1:n-windowSize+1
             pi = i:i+windowSize-1;
@@ -58,8 +52,6 @@ for iter = 1:iterations
         end
     end 
     R(~M3)=I(~M3);
-
-    %Convert back to uint8
     I = uint8(255*R);
 end
 imageOut = I;

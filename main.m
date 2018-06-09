@@ -1,8 +1,8 @@
-clc;clear;
+clc;clear;close all;
 addpath(genpath('CSH'));
 addpath(genpath('Images'));
 
-image = 'PatchMatch.jpg';
+image = 'test.jpg';
 
 imageIn = imread(image);
 binaryMask = get_binary_mask(imageIn);

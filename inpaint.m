@@ -17,7 +17,7 @@ I = OnionPeelReconstruct(imageIn,mask,windowSize,csh_iterations);
 %% Pyramid level recontruction
 I = PyramidReconstruct(I,mask,windowSize,thresholdScale,iterations,csh_iterations);
 
-%% Pyramid level recontruction
+%% Final recontruction
 imageOut = FinalReconstruction(I,mask,windowSize,final_iterations,csh_iterations);
 
 end
