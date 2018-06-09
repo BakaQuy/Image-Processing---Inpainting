@@ -25,7 +25,13 @@ for o = 1:ceil(max(distT(:))) % Reconstruct the occlusion area starting from the
     R = zeros(size(I));
     Rcount = zeros(m,n);
     Rdata = zeros(1,5);
+    
+    % Compute NN field
+    %%% PUT PATCHMATCH
     CSH_ann = CSH_nn(I,D,windowSize,csh_iterations,1,0,M); % Use Patchmacth to compute NNF
+    %CSH_ann = find_NNF(I,D,csh_iterations,windowSize);
+    %%%
+    
     I = double(I)./255; % Convert the image I to double precision for computation
     for i = 1:m-windowSize+1
         for j = 1:n-windowSize+1

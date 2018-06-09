@@ -30,7 +30,10 @@ for logscale = firstScale:-1
         k = 1;
         
         % Compute NN field
-        CSH_ann = CSH_nn(I,D,windowSize,csh_iterations,1,0,M);
+        %%% PUT PATCHMATCH
+        CSH_ann = CSH_nn(I,D,windowSize,csh_iterations,1,0,M); % Use Patchmacth to compute NNF
+        %CSH_ann = find_NNF(I,D,csh_iterations,windowSize);
+        %%%
         
         % Convert the image I to double precision for computation
         I = double(I)./255;

@@ -1,6 +1,7 @@
 clc;clear;close all;
 addpath(genpath('CSH'));
 addpath(genpath('Images'));
+addpath(genpath('Patchmatch'));
 
 image = 'test.jpg';
 
