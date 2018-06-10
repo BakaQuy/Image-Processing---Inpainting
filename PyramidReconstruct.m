@@ -1,4 +1,4 @@
-function  imageOut = PyramidReconstruct(imageIn,mask,windowSize,thresholdScale,iterations,csh_iterations)
+function  imageOut = PyramidReconstruct(imageIn,mask,windowSize,thresholdScale,iterations,search_iterations)
 %%% Pyramid level scaling
 % Starting scale
 [m,n,~] = size(imageIn);
@@ -15,7 +15,7 @@ M3 = repmat(M,[1 1 3])==1; % Build 3D matrix mask (RGB) that will be used to kee
 distT = bwdist(~M); % Compute distance transform matrix
 
 %%% Completion
-for logscale = firstScale:-1
+for logscale = firstScale:-1 % Change -1 to 0 if FinalReconstruction.m is not applied in inpaint.m
     scale = 2^(logscale);
     for iter = 1:iterations
         imshow(I);
@@ -29,11 +29,9 @@ for logscale = firstScale:-1
         Rdata = zeros(1,5);
         k = 1;
         
-        % Compute NN field
-        %%% PUT PATCHMATCH
-        CSH_ann = CSH_nn(I,D,windowSize,csh_iterations,1,0,M); % Use Patchmacth to compute NNF
-        %CSH_ann = find_NNF(I,D,csh_iterations,windowSize);
-        %%%
+        % Compute NNF with Patchmatch
+%         NNF = CSH_nn(I,D,windowSize,search_iterations,1,0,M); % Use Patchmacth to compute NNF
+        NNF = Patchmatch(I,D,search_iterations,windowSize,M);
         
         % Convert the image I to double precision for computation
         I = double(I)./255;
@@ -46,8 +44,12 @@ for logscale = firstScale:-1
                 MTemp = M(pi,pj); 
                 if any(MTemp(:) == 1)
                     patch = I(pi,pj,:);
-                    i2 = CSH_ann(i,j,2);
-                    j2 = CSH_ann(i,j,1);
+                    
+                    i2 = NNF(i,j,2);
+                    j2 = NNF(i,j,1);
+                    
+%                     [i2,j2] = BruteForceSearch([i,j],I,M,windowSize);
+
                     pi2 = i2:i2+windowSize-1;
                     pj2 = j2:j2+windowSize-1;
                     patch2 = I(pi2,pj2,:);

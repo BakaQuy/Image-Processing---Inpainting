@@ -1,4 +1,7 @@
-function  imageOut = FinalReconstruction(imageIn,mask,windowSize,iterations,csh_iterations)
+function  imageOut = FinalReconstruction(imageIn,mask,windowSize,iterations,search_iterations)
+% Final reconstruction as proposed by Newson et al.
+% We just take the pixel proposed by the window Vi that has the higher
+% similitude amoung all windows Vi that also contain the targeted pixel 
 I = imageIn;
 M = mask;
 M(M>0)=1;
@@ -17,11 +20,9 @@ for iter = 1:iterations
     R = zeros(size(I));
     Rcount = 10*ones(m,n);
 
-    % Compute NN field
-    %%% PUT PATCHMATCH
-    CSH_ann = CSH_nn(I,D,windowSize,csh_iterations,1,0,M); % Use Patchmacth to compute NNF
-    %CSH_ann = find_NNF(I,D,csh_iterations,windowSize);
-    %%%
+    % Compute NNF with Patchmatch
+%     NNF = CSH_nn(I,D,windowSize,search_iterations,1,0,M); % Use Patchmacth to compute NNF
+    NNF = Patchmatch(I,D,search_iterations,windowSize,M);
 
     % Convert the image I to double precision for computation
     I = double(I)./255;
@@ -32,12 +33,11 @@ for iter = 1:iterations
             MTemp = M(pi,pj);
             if any(MTemp(:) == 1)
                 patch = I(pi,pj,:);
-                i2 = CSH_ann(i,j,2);
-                j2 = CSH_ann(i,j,1);
                 
-%                 i2j2 = BruteForceSearch([i,j],I,M,windowSize);
-%                 i2 = i2j2(1);
-%                 j2 = i2j2(2);
+                i2 = NNF(i,j,2);
+                j2 = NNF(i,j,1);
+                
+%               [i2,j2] = BruteForceSearch([i,j],I,M,windowSize);
                 
                 pi2 = i2:i2+windowSize-1;
                 pj2 = j2:j2+windowSize-1;
@@ -46,6 +46,10 @@ for iter = 1:iterations
                 distTemp = distT(pi,pj)+1;
                 distTemp = repmat(distTemp,[1 1 3]);
                 d = sum( distTemp(:).*(patch(:)-patch2(:)).^2);
+                
+                % Check if the new distance d computed from the window
+                % Vi(=patch2) is lower and we only update the pixels that
+                % have a higher d than the new one.
                 RcountToUpdate = Rcount(pi,pj)>=d;
                 Rcount(pi,pj) = Rcount(pi,pj).*~RcountToUpdate;
                 Rcount(pi,pj) = Rcount(pi,pj)+d*RcountToUpdate;
