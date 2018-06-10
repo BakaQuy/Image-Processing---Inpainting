@@ -63,16 +63,14 @@ for logscale = firstScale:-1 % Change -1 to 0 if FinalReconstruction.m is not ap
         end
         sigma = prctile(Rdata(:,5),75);
         Rdata(:,5) = exp( -Rdata(:,5) ./ (2*sigma^2) ); % Compute sim
-        Mshift = MeanShift(I, Rdata, sigma, 1, 0.1);
+        % Mshift = MeanShift(I, Rdata, sigma, 1, 0.1);
         for raw = 1:k-1
            pi = Rdata(raw,1):Rdata(raw,1)+windowSize-1; %Wi_x
            pj = Rdata(raw,2):Rdata(raw,2)+windowSize-1; %Wi_y
            pi2 = Rdata(raw,3):Rdata(raw,3)+windowSize-1; %Vi_x
            pj2 = Rdata(raw,4):Rdata(raw,4)+windowSize-1; %Vi_y
-           R(pi,pj,:) = R(pi,pj,:) + Mshift; %Sim_i*alpha_i*c_i
+           R(pi,pj,:) = R(pi,pj,:) + Rdata(raw,5)*(1.3.^(-distT(pi,pj)).*I(pi2,pj2,:)); %Sim_i*alpha_i*c_i
            Rcount(pi,pj) = Rcount(pi,pj) + Rdata(raw,5)* 1.3.^(-distT(pi,pj)); %Sim_i*alpha_i
-%            R(pi,pj,:) = R(pi,pj,:) + Rdata(raw,5)*(1.3.^(-distT(pi,pj)).*I(pi2,pj2,:)); %Sim_i*alpha_i*c_i
-%            Rcount(pi,pj) = Rcount(pi,pj) + Rdata(raw,5)* 1.3.^(-distT(pi,pj)); %Sim_i*alpha_i
         end
         
         % Divide : c = (Sim_i*alpha_i*c_i)/(Sim_i*alpha_i)
