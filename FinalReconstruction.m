@@ -32,6 +32,7 @@ for iter = 1:iterations
             MTemp = M(pi,pj);
             if any(MTemp(:) == 1)
                 patch = I(pi,pj,:);
+                
                 i2 = CSH_ann(i,j,2);
                 j2 = CSH_ann(i,j,1);
                 

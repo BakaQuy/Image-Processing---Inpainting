@@ -40,8 +40,10 @@ for o = 1:ceil(max(distT(:))) % Reconstruct the occlusion area starting from the
             distTemp = distT(pi,pj);
             if any(ceil(distTemp(:)==o)) && ~any(ceil(distTemp(:)==o+1))
                 patch = I(pi,pj,:);
+                
                 i2 = CSH_ann(i,j,2);
                 j2 = CSH_ann(i,j,1);
+                
 %                 i2j2 = BruteForceSearch([i,j],I,M,windowSize);
 %                 i2 = i2j2(1);
 %                 j2 = i2j2(2);

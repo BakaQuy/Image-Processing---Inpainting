@@ -5,6 +5,7 @@ j0 = ij(2);
 pi0 = i0:i0+windowSize-1;
 pj0 = j0:j0+windowSize-1;
 patch0 = imageIn(pi0,pj0,:);
+
 prevd = sum( (zeros(windowSize,windowSize)-ones(windowSize,windowSize)).^2 );
 for i = 1:m-windowSize+1
     for j = 1:n-windowSize+1
