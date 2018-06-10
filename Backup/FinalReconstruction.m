@@ -22,8 +22,8 @@ for iter = 1:iterations
 
     % Compute NN field
     %%% PATCHMATCH
-%     NNF = CSH_nn(I,D,windowSize,search_iterations,1,0,M); % Use Patchmacth to compute NNF
-    NNF = find_NNF(I,D,search_iterations,windowSize,M);
+    NNF = CSH_nn(I,D,windowSize,search_iterations,1,0,M); % Use Patchmacth to compute NNF
+%     NNF = find_NNF(I,D,search_iterations,windowSize,M);
     %%%
 
     % Convert the image I to double precision for computation

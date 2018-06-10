@@ -31,8 +31,8 @@ for logscale = firstScale:-1 % Change -1 to 0 if FinalReconstruction.m is not ap
         
         % Compute NN field
         %%% PUT PATCHMATCH
-%         NNF = CSH_nn(I,D,windowSize,search_iterations,1,0,M); % Use Patchmacth to compute NNF
-        NNF = find_NNF(I,D,search_iterations,windowSize,M);
+        NNF = CSH_nn(I,D,windowSize,search_iterations,1,0,M); % Use Patchmacth to compute NNF
+%         NNF = find_NNF(I,D,search_iterations,windowSize,M);
         %%%
         
         % Convert the image I to double precision for computation
