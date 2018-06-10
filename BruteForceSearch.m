@@ -1,4 +1,4 @@
-function  i2j2 = BruteForceSearch(ij,imageIn,mask,windowSize)
+function  [i2,j2] = BruteForceSearch(ij,imageIn,mask,windowSize)
 [m,n,~] = size(imageIn);
 i0 = ij(1);
 j0 = ij(2);
@@ -16,7 +16,8 @@ for i = 1:m-windowSize+1
             patch = imageIn(pi,pj,:);
             d = sum( (patch(:)-patch0(:)).^2 );
             if d < prevd
-                i2j2 = [i,j];
+                i2 = i;
+                j2 = j;
                 prevd = d;
             end
         end

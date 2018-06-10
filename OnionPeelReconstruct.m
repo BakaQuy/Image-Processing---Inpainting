@@ -1,4 +1,4 @@
-function  imageOut = OnionPeelReconstruct(imageIn,mask,windowSize,csh_iterations)
+function  imageOut = OnionPeelReconstruct(imageIn,mask,windowSize,search_iterations)
 %%% Pyramid level scaling
 % Starting scale
 [m,n,~] = size(imageIn);
@@ -28,8 +28,8 @@ for o = 1:ceil(max(distT(:))) % Reconstruct the occlusion area starting from the
     
     % Compute NN field
     %%% PUT PATCHMATCH
-    CSH_ann = CSH_nn(I,D,windowSize,csh_iterations,1,0,M); % Use Patchmacth to compute NNF
-    %CSH_ann = find_NNF(I,D,csh_iterations,windowSize);
+    NNF = CSH_nn(I,D,windowSize,search_iterations,1,0,M); % Use Patchmacth to compute NNF
+    NNF1 = find_NNF(I,D,search_iterations,windowSize,M);
     %%%
     
     I = double(I)./255; % Convert the image I to double precision for computation
@@ -40,13 +40,10 @@ for o = 1:ceil(max(distT(:))) % Reconstruct the occlusion area starting from the
             distTemp = distT(pi,pj);
             if any(ceil(distTemp(:)==o)) && ~any(ceil(distTemp(:)==o+1))
                 patch = I(pi,pj,:);
+                i2 = NNF(i,j,2);
+                j2 = NNF(i,j,1);
                 
-                i2 = CSH_ann(i,j,2);
-                j2 = CSH_ann(i,j,1);
-                
-%                 i2j2 = BruteForceSearch([i,j],I,M,windowSize);
-%                 i2 = i2j2(1);
-%                 j2 = i2j2(2);
+%               [i2,j2] = BruteForceSearch([i,j],I,M,windowSize);
                 
                 pi2 = i2:i2+windowSize-1;
                 pj2 = j2:j2+windowSize-1;

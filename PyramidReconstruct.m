@@ -1,4 +1,4 @@
-function  imageOut = PyramidReconstruct(imageIn,mask,windowSize,thresholdScale,iterations,csh_iterations)
+function  imageOut = PyramidReconstruct(imageIn,mask,windowSize,thresholdScale,iterations,search_iterations)
 %%% Pyramid level scaling
 % Starting scale
 [m,n,~] = size(imageIn);
@@ -31,8 +31,8 @@ for logscale = firstScale:-1
         
         % Compute NN field
         %%% PUT PATCHMATCH
-        CSH_ann = CSH_nn(I,D,windowSize,csh_iterations,1,0,M); % Use Patchmacth to compute NNF
-        %CSH_ann = find_NNF(I,D,csh_iterations,windowSize);
+%         NNF = CSH_nn(I,D,windowSize,search_iterations,1,0,M); % Use Patchmacth to compute NNF
+        NNF = find_NNF(I,D,search_iterations,windowSize);
         %%%
         
         % Convert the image I to double precision for computation
@@ -47,12 +47,10 @@ for logscale = firstScale:-1
                 if any(MTemp(:) == 1)
                     patch = I(pi,pj,:);
                     
-                    i2 = CSH_ann(i,j,2);
-                    j2 = CSH_ann(i,j,1);
+                    i2 = NNF(i,j,2);
+                    j2 = NNF(i,j,1);
                     
-                    %i2j2 = BruteForceSearch([i,j],I,M,windowSize);
-%                   i2 = i2j2(1);
-%                   j2 = i2j2(2);
+%                     [i2,j2] = BruteForceSearch([i,j],I,M,windowSize);
 
                     pi2 = i2:i2+windowSize-1;
                     pj2 = j2:j2+windowSize-1;
