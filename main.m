@@ -6,8 +6,8 @@ addpath(genpath('Patchmatch'));
 image = 'test.jpg';
 
 imageIn = imread(image);
-% binaryMask = SelectTarget(imageIn);
-load testmask1.mat
+binaryMask = SelectTarget(imageIn);
+% load Original3mask1.mat
 
 tic
 A = inpaint(imageIn,binaryMask);
@@ -15,4 +15,4 @@ toc
 
 figure
 imshow(A)
-title('Finito!')
+% title('Finito!')

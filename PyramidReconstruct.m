@@ -30,7 +30,6 @@ for logscale = firstScale:-1 % Change -1 to 0 if FinalReconstruction.m is not ap
         k = 1;
         
         % Compute NNF with Patchmatch
-%         NNF = CSH_nn(I,D,windowSize,search_iterations,1,0,M); % Use Patchmacth to compute NNF
         NNF = Patchmatch(I,D,search_iterations,windowSize,M);
         
         % Convert the image I to double precision for computation
@@ -47,7 +46,6 @@ for logscale = firstScale:-1 % Change -1 to 0 if FinalReconstruction.m is not ap
                     
                     i2 = NNF(i,j,2);
                     j2 = NNF(i,j,1);
-                    
 %                     [i2,j2] = BruteForceSearch([i,j],I,M,windowSize);
 
                     pi2 = i2:i2+windowSize-1;
