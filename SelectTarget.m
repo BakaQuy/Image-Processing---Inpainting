@@ -1,6 +1,6 @@
 function BW = SelectTarget(I)
 figure
-imshow(I); title('init');
+imshow(I); title('Select a occlusion area and press Enter');
 I1=rgb2gray(I);
 hold on
 [x,y,c]=ginput(1);
