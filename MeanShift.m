@@ -2,7 +2,7 @@ function [ M ] = MeanShift( I, Rdata, distT, bandwidth, maxIt, thresholdCluster 
 % Rdata contains the weighted colors of each pixel candidate
 % M contains the pixels that belong to the higher mode
 % sigma is the std of the color set
-RGB = Rdata(:,5) .* 1.3.^(distT(Rdata(:,1), Rdata(:,2))) .* I(Rdata(:,3), Rdata(:,4), :); % I(i2, j2, :)
+RGB = Rdata(:,5) .* 1.3.^(-distT(Rdata(:,1), Rdata(:,2))) .* I(Rdata(:,3), Rdata(:,4), :); % I(i2, j2, :)
 [m,n,rgb] = size(RGB);
 RGB_past = zeros(m,n,rgb,maxIt);
     

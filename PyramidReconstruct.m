@@ -67,7 +67,7 @@ for logscale = firstScale:-1
            pj = Rdata(raw,2):Rdata(raw,2)+windowSize-1; %Wi_y
            pi2 = Rdata(raw,3):Rdata(raw,3)+windowSize-1; %Vi_x
            pj2 = Rdata(raw,4):Rdata(raw,4)+windowSize-1; %Vi_y
-           R(pi,pj,:) = R(pi,pj,:) + Rdata(raw,5)*(1.3.^(distT(pi,pj)).*I(pi2,pj2,:)); %Sim_i*alpha_i*c_i
+           R(pi,pj,:) = R(pi,pj,:) + Rdata(raw,5)*(1.3.^(-distT(pi,pj)).*I(pi2,pj2,:)); %Sim_i*alpha_i*c_i
            Rcount(pi,pj) = Rcount(pi,pj) + Rdata(raw,5)* 1.3.^(distT(pi,pj)); %Sim_i*alpha_i
         end
         
