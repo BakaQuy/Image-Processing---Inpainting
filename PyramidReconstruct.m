@@ -61,7 +61,7 @@ for logscale = firstScale:-1 % Change -1 to 0 if FinalReconstruction.m is not ap
         end
         sigma = prctile(Rdata(:,5),75);
         Rdata(:,5) = exp( -Rdata(:,5) ./ (2*sigma^2) ); % Compute sim
-        % here put meanshift
+        % Mshift = MeanShift(I, Rdata, sigma, 1, 0.1);
         for raw = 1:k-1
            pi = Rdata(raw,1):Rdata(raw,1)+windowSize-1; %Wi_x
            pj = Rdata(raw,2):Rdata(raw,2)+windowSize-1; %Wi_y
