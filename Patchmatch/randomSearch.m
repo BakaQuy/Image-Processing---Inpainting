@@ -1,36 +1,38 @@
-function [offset] = randomSearch(bPatch, imgA, offsets, y, x, patchSize, offset, mask)
+function [coord] = randomSearch(Patch, imgB, patchSize, coord, mask)
 
-iCounter = 0;
-
-w = size(offsets);
-
+i = 0;
+[mb,nb,~]=size(imgB);
+w = max([mb,nb]);
 a = 0.5;
-r = w.*(a.^iCounter);
+r = w*(a^i);
 
-while (r(1) > 1) && (r(2) > 1)    
+while (r > 1)   
+    %% dimension for window search
     r = round(r);
-    ry = randi([-r(1) r(1)]);
-    rx = randi([-r(2) r(2)]);
+    ry = randi([-r r]);
+    rx = randi([-r r]);
     
-    offcoords = [y+ry, x+rx];
-    offcoords(1) = min(max(1,offcoords(1)),size(offsets,1));
-    offcoords(2) = min(max(1,offcoords(2)),size(offsets,2));
+    %% adding random offset
+    coords = [coord(1)+rx, coord(2)+ry];
+    coords(1) = min(max(1,coords(1)),mb-patchSize+1);
+    coords(2) = min(max(1,coords(2)),nb-patchSize+1);
     
-    centerPatch = imgA(offset(1):offset(1)+patchSize-1,offset(2):offset(2)+patchSize-1,:);
-    err= centerPatch(:)-bPatch(:);
+    %% must compare previous best patch to a new one
+    centerPatch = imgB(coord(1):coord(1)+patchSize-1,coord(2):coord(2)+patchSize-1,:);
+    err= centerPatch(:)-Patch(:);
     dist = sum(err.^2);
     
-    candOffset = offsets(offcoords(1),offcoords(2),:);
-    
-    candidatePatch = imgA(candOffset(1):candOffset(1)+patchSize-1,candOffset(2):candOffset(2)+patchSize-1,:);
-    errCandi=candidatePatch(:)-bPatch(:);
+    %% computing new candidate patch
+    candidatePatch = imgB(coords(1):coords(1)+patchSize-1,coords(2):coords(2)+patchSize-1,:);
+    errCandi=candidatePatch(:)-Patch(:);
     candidateDistance= sum(errCandi.^2);
     
-    if candidateDistance < dist && mask(candOffset(1),candOffset(2))~=1
-        offset = candOffset;
+    %% comparaison and validation
+    if candidateDistance < dist && mask(coords(1),coords(2))~=1
+        coord = coords;
     end
     
-    iCounter = iCounter+1;
-    r = w.*(a.^iCounter);
+    i = i+1;
+    r = w*(a^i);
 end
 end
