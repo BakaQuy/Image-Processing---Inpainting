@@ -6,8 +6,8 @@ addpath(genpath('Patchmatch'));
 image = 'test.jpg';
 
 imageIn = imread(image);
-% binaryMask = get_binary_mask(imageIn);
-binaryMask = SelectTarget(imageIn); %Jerry's function
+% binaryMask = SelectTarget(imageIn);
+load testmask1.mat
 
 tic
 A = inpaint(imageIn,binaryMask);

@@ -1,4 +1,5 @@
 function  [i2,j2] = BruteForceSearch(ij,imageIn,mask,windowSize)
+% Naive implementation of a brute force seach to find the corresponding patch Vi
 [m,n,~] = size(imageIn);
 i0 = ij(1);
 j0 = ij(2);

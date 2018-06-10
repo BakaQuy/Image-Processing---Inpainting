@@ -2,7 +2,7 @@ function  imageOut = inpaint(imageIn,mask)
 %% Parameters
 windowSize = 8; % Size of the window Wi,Vi
 iterations = 10; % Number of iterations per scale
-search_iterations = 5;
+search_iterations = 5; % Patchmatch iteration parameter
 final_iterations = 1; % Number of iterations in the final recontruction (1 or 2 iterations is well enough)
 thresholdScale = 1; % Threshold to go to next scale level
 

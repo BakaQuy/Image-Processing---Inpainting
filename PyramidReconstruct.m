@@ -15,7 +15,7 @@ M3 = repmat(M,[1 1 3])==1; % Build 3D matrix mask (RGB) that will be used to kee
 distT = bwdist(~M); % Compute distance transform matrix
 
 %%% Completion
-for logscale = firstScale:-1
+for logscale = firstScale:-1 % Change -1 to 0 if FinalReconstruction.m is not applied in inpaint.m
     scale = 2^(logscale);
     for iter = 1:iterations
         imshow(I);
@@ -29,11 +29,9 @@ for logscale = firstScale:-1
         Rdata = zeros(1,5);
         k = 1;
         
-        % Compute NN field
-        %%% PUT PATCHMATCH
-        NNF = CSH_nn(I,D,windowSize,search_iterations,1,0,M); % Use Patchmacth to compute NNF
-%         NNF = find_NNF(I,D,search_iterations,windowSize,M);
-        %%%
+        % Compute NNF with Patchmatch
+%         NNF = CSH_nn(I,D,windowSize,search_iterations,1,0,M); % Use Patchmacth to compute NNF
+        NNF = Patchmatch(I,D,search_iterations,windowSize,M);
         
         % Convert the image I to double precision for computation
         I = double(I)./255;
