@@ -60,4 +60,7 @@ for iter = 1:iterations
     I = uint8(255*R);
 end
 imageOut = I;
+imshow(I);
+title(sprintf('Finito!'));
+pause(0.001)
 end
